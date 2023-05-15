@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+      integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./main.js" type="module" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <title>The Bank</title>
+  </head>
+  <body>
+    <header>
+      <h1>The Bank</h1>
+    </header>
+    <main>
+      <form id="createUser">
+        <input
+          type="text"
+          placeholder="Username"
+          id="createUsername"
+          required
+        />
+        <input
+          type="text"
+          placeholder="First name"
+          id="createFirstName"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Last name"
+          id="createLastName"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          id="createPassword"
+          required
+        />
+        <div>
+          <button id="createUserBtn">Create</button>
+          <button type="reset">Cancel</button>
+        </div>
+      </form>
+      <form id="loginForm">
+        <input type="text" placeholder="Username" id="loginUsername" required />
+        <input
+          type="password"
+          placeholder="Password"
+          id="loginPassword"
+          required
+        />
+        <div>
+          <button id="loginBtn">Login</button>
+          <button type="reset">Cancel</button>
+        </div>
+      </form>
+    </main>
+    <footer></footer>
+  </body>
+</html>

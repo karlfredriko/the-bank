@@ -1,0 +1,12 @@
+main {
+  background-color: aqua;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  margin: 0 auto 3rem auto;
+}
