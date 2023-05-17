@@ -2,6 +2,9 @@ import { MongoClient, ObjectId } from "mongodb";
 import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import bcrypt from "bcrypt";
+
+const saltRounds = 10;
 
 const app = express();
 const port = 3000;
@@ -28,36 +31,83 @@ app.use(
 
 const isAuthorized = (req, res, next) => {
   if (req.session.user) {
-    console.log("You'r authorized");
     next();
   } else {
-    console.log("Not authorized:(");
-    next();
+    res.status(401).send("Unautorized, Not logged in");
   }
 };
 
 app.get("/api", async (req, res) => {
-  res.json(req.session);
+  res.send(req.session);
 });
 
-app.get("/api/login", async (req, res) => {
-  const user = {
-    user: "Karl",
-    password: "123test",
-  };
-  const result = await users.findOne(user);
-  if (result) {
-    console.log("yea bb");
-    req.session.user = user.user;
-    res.json("user", user, "session", req.session);
+// LOGOUT
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({ loggedIn: false });
+  });
+});
+
+// CREATES UNIQUE USER, HASHES PASS
+app.post("/api/user", async (req, res) => {
+  const existingUser = await users.findOne({ user_name: req.body.user_name });
+  if (existingUser) {
+    res.status(409).send("Conflict, Username taken.");
   } else {
-    res.status(401).send("unautorized");
+    bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      const cryptInfo = { ...req.body, password: hash };
+      const result = await users.insertOne(cryptInfo);
+      res.json({ answer: "ok", result });
+    });
   }
 });
+// LOGIN
+app.post("/api/login", async (req, res) => {
+  const user = await users.findOne({ user_name: req.body.user_name });
+  if (user) {
+    bcrypt.compare(req.body.password, user.password, (err, result) => {
+      if (err) {
+        console.log(err);
+        return;
+      } else if (result) {
+        const { password, ...userInfo } = user;
+        req.session.user = userInfo;
+        res.json({ loggedIn: true });
+      }
+    });
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
+// CHECKING FOR USER
+app.get("/api/loggedin", isAuthorized, async (req, res) => {
+  res.json({ loggedIn: true, user: req.session.user });
+});
 
-app.use(isAuthorized);
+app.get("/api/accounts/:id", isAuthorized, async (req, res) => {
+  const userAccounts = await accounts
+    .find({
+      ownerId: req.params.id,
+    })
+    .toArray();
+  res.json({ success: true, userAccounts });
+});
 
-app.get("/api/loggedin", isAuthorized, async (req, res) => {});
+app.get("/api/account/:id", isAuthorized, async (req, res) => {
+  const singleAccount = await accounts.findOne({
+    _id: new ObjectId(req.params.id),
+  });
+  res.json({ success: true, singleAccount });
+});
+
+app.post("/api/accounts", isAuthorized, async (req, res) => {
+  const newAccount = await accounts.insertOne(req.body);
+  res.json({ success: true });
+});
 
 app.listen(port, () => {
   console.log(`Express-server running on port:${port}`);

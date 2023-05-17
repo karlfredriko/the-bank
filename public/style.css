@@ -1,12 +1,71 @@
-main {
-  background-color: aqua;
+body {
+  margin: 0;
+  background-color: hsl(180, 100%, 50%);
 }
-
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 4rem;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.marg-sides {
+  margin: 0 2rem;
+}
+header {
+  background-color: hsl(303, 100%, 66%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3rem;
+  border: outset;
+  border-radius: 0 0 8px 8px;
+}
+.user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+main {
+  padding: 1rem;
+  height: 600px;
+}
+.information {
+  background-color: hsl(180, 100%, 86%);
+  border: outset;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 0 2rem;
+}
 form {
+  background-color: hsl(303, 100%, 66%);
   display: flex;
   flex-direction: column;
   width: 40%;
   gap: 0.5rem;
   margin-bottom: 2rem;
-  margin: 0 auto 3rem auto;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: outset;
+  border-radius: 8px;
+}
+.buttonRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.hidden {
+  display: none;
 }
