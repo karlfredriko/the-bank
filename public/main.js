@@ -48,11 +48,10 @@ loginForm.addEventListener("submit", async (e) => {
   loginForm.disable = true;
   try {
     await login();
-    console.log("user logged in");
     loginForm.reset();
     loadPage();
   } catch (err) {
-    console.log(err);
+    console.log(err, "login-error");
   }
   loginForm.disable = false;
 });

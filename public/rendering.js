@@ -1,4 +1,4 @@
-import { getApi, postApi } from "./api.js";
+import { getApi, postApi, putApi } from "./api.js";
 
 const main = document.querySelector("main");
 
@@ -17,7 +17,7 @@ const renderUserPage = async (user) => {
   const loggedUser = document.querySelector("#loggedUser");
   main.innerHTML = "";
   loggedUser.innerHTML = `
-    <p>user logged in: </p>
+    <p>logged in: </p>
     <h2>${user.user_name}</h2>
     `;
   await renderNav(user);
@@ -57,7 +57,7 @@ const accountInfo = async (id) => {
   main.innerHTML = "";
   const res = await getApi(`/api/account/${id}`);
   console.log(res.singleAccount);
-  const { account_name, _id, amount } = res.singleAccount;
+  const { account_name, _id, amount, ownerId } = res.singleAccount;
   const section = document.createElement("section");
   section.classList = "information flex-col";
   section.innerHTML = `
@@ -72,6 +72,7 @@ const accountInfo = async (id) => {
         <div>
           <button id="accountWithdraw">Withdraw</button>
           <button id="accountDeposit">Deposit</button>
+          <input type="number" min="1" max="100000" class="width-7" id="amountToChange" placeholder="Select amount" required>
         </div>
         <div>
           <button id="accountDelete">Delete</button>
@@ -79,9 +80,57 @@ const accountInfo = async (id) => {
       </div>
     `;
   main.append(section);
+  const amountToChange = document.querySelector("#amountToChange");
+  const deleteBtn = document.querySelector("#accountDelete");
+  deleteBtn.addEventListener("click", async () => {
+    confirmAndDelete(res.singleAccount);
+    loadPage();
+  });
+  const withdrawBtn = document.querySelector("#accountWithdraw");
+  const userAccounts = document.querySelector("#userAccounts");
+  withdrawBtn.addEventListener("click", async () => {
+    const newTotal = +amount - +amountToChange.value;
+    if (newTotal < 0) {
+      alert(`You can't withdraw more BG's than ${amount} from this account.`);
+    } else {
+      updateAmount(newTotal, _id);
+      updateOption(res.singleAccount, newTotal);
+      accountInfo(_id);
+    }
+  });
+  const depositBtn = document.querySelector("#accountDeposit");
+  depositBtn.addEventListener("click", async () => {
+    const newTotal = +amountToChange.value + +amount;
+    updateAmount(newTotal, _id);
+    updateOption(res.singleAccount, newTotal);
+    accountInfo(_id);
+  });
+};
+const updateAmount = async (amount, id) => {
+  const data = { amount };
+  const res = await putApi(`/api/account/update/${id}`, data);
+  console.log(res);
+};
+const confirmAndDelete = async (accountInfo) => {
+  const { account_name, _id, amount } = accountInfo;
+  let info = `Are you sure you want to delete "${account_name}"?`;
+  if (+amount > 0) {
+    info += `\n${amount} BG, will be automatically withdrawn and sent to you upon deletion.`;
+  }
+  if (confirm(info)) {
+    await postApi(`/api/account/delete/${_id}`);
+  }
+};
+const updateOption = (accountInfo, newAmount) => {
+  const { account_name, _id } = accountInfo;
+  const optionElem = document.querySelector(`#_${_id}`);
+  console.log("before", optionElem.innerText);
+  optionElem.innerText = `${account_name}, ${_id} - ${newAmount} BG`;
+  console.log("after", optionElem.innerText);
 };
 
 const renderUserAccounts = async (elem, userId) => {
+  elem.innerHTML = "";
   const res = await getApi(`/api/accounts/${userId}`);
   console.log(res.userAccounts, "all accounts");
   createOptions(elem, res.userAccounts);
@@ -99,9 +148,10 @@ const createOptions = (elem, optionData) => {
   } else {
     optionData.forEach((e) => {
       const { account_name, _id, amount } = e;
-      const option = document.createElement("option");
+      let option = document.createElement("option");
       option.innerText = `${account_name}, ${_id} - ${amount} BG`;
       option.value = _id;
+      option.id = `_${_id}`;
       elem.append(option);
     });
   }

@@ -97,6 +97,21 @@ app.get("/api/accounts/:id", isAuthorized, async (req, res) => {
   res.json({ success: true, userAccounts });
 });
 
+app.post("/api/account/delete/:id", isAuthorized, async (req, res) => {
+  await accounts.deleteOne({
+    _id: new ObjectId(req.params.id),
+  });
+  res.json({ success: true, deleted: true });
+});
+
+app.put("/api/account/update/:id", isAuthorized, async (req, res) => {
+  const updatedAccount = await accounts.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { amount: req.body.amount } }
+  );
+  res.json({ success: true, updatedAccount });
+});
+
 app.get("/api/account/:id", isAuthorized, async (req, res) => {
   const singleAccount = await accounts.findOne({
     _id: new ObjectId(req.params.id),

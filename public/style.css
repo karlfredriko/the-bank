@@ -20,6 +20,9 @@ body {
 .marg-sides {
   margin: 0 2rem;
 }
+.width-7 {
+  width: 7rem;
+}
 header {
   background-color: hsl(303, 100%, 66%);
   display: flex;
