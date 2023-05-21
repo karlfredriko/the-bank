@@ -55,7 +55,7 @@ form {
   background-color: hsl(303, 100%, 66%);
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 30%;
   gap: 0.5rem;
   margin-bottom: 2rem;
   margin: 2rem auto;
