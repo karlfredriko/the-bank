@@ -5,20 +5,22 @@ const main = document.querySelector("main");
 export const loadPage = async () => {
   const res = await getApi("/api/loggedin");
   if (res) {
-    console.log("welcome in " + res.user.user_name);
-    console.log(res.user);
     renderUserPage(res.user);
-  } else {
-    console.log("nope");
   }
 };
 
 const renderUserPage = async (user) => {
   const loggedUser = document.querySelector("#loggedUser");
   main.innerHTML = "";
+  const { user_name, first_name, last_name } = user;
   loggedUser.innerHTML = `
+  <div class="user">
     <p>logged in: </p>
-    <h2>${user.user_name}</h2>
+    <h2>"${user_name}"</h2>
+  </div>
+  <div>
+    <h3 class="user-name">${first_name} ${last_name}</h3>
+  </div>
     `;
   await renderNav(user);
 };
@@ -56,7 +58,6 @@ const renderNav = async (user) => {
 const accountInfo = async (id) => {
   main.innerHTML = "";
   const res = await getApi(`/api/account/${id}`);
-  console.log(res.singleAccount);
   const { account_name, _id, amount, ownerId } = res.singleAccount;
   const section = document.createElement("section");
   section.classList = "information flex-col";
@@ -109,7 +110,6 @@ const accountInfo = async (id) => {
 const updateAmount = async (amount, id) => {
   const data = { amount };
   const res = await putApi(`/api/account/update/${id}`, data);
-  console.log(res);
 };
 const confirmAndDelete = async (accountInfo) => {
   const { account_name, _id, amount } = accountInfo;
@@ -124,15 +124,12 @@ const confirmAndDelete = async (accountInfo) => {
 const updateOption = (accountInfo, newAmount) => {
   const { account_name, _id } = accountInfo;
   const optionElem = document.querySelector(`#_${_id}`);
-  console.log("before", optionElem.innerText);
   optionElem.innerText = `${account_name}, ${_id} - ${newAmount} BG`;
-  console.log("after", optionElem.innerText);
 };
 
 const renderUserAccounts = async (elem, userId) => {
   elem.innerHTML = "";
   const res = await getApi(`/api/accounts/${userId}`);
-  console.log(res.userAccounts, "all accounts");
   createOptions(elem, res.userAccounts);
   if (elem.value) {
     await accountInfo(elem.value);

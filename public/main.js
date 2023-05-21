@@ -14,6 +14,7 @@ const loginPassword = document.querySelector("#loginPassword");
 const loginForm = document.querySelector("#loginForm");
 
 const newBtn = document.querySelector("#new");
+const cancelCreate = document.querySelector("#cancelCreate");
 
 loadPage();
 
@@ -23,6 +24,7 @@ const toggleHidden = () => {
 };
 
 newBtn.addEventListener("click", toggleHidden);
+cancelCreate.addEventListener("click", toggleHidden);
 
 const login = async () => {
   const userData = {
@@ -30,7 +32,6 @@ const login = async () => {
     password: loginPassword.value,
   };
   const result = await postApi("/api/login", userData);
-  console.log(result);
 };
 
 const createUser = async () => {
@@ -61,7 +62,6 @@ createUserForm.addEventListener("submit", async (e) => {
   createUserForm.disable = true;
   try {
     await createUser();
-    console.log("user created");
     createUserForm.reset();
     toggleHidden();
   } catch (err) {

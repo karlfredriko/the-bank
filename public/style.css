@@ -36,9 +36,13 @@ header {
   align-items: center;
   gap: 1rem;
 }
+.user-name {
+  text-align: end;
+  margin: 0 0 1rem 0;
+}
 main {
   padding: 1rem;
-  height: 600px;
+  height: 400px;
 }
 .information {
   background-color: hsl(180, 100%, 86%);
@@ -71,4 +75,17 @@ form {
 }
 .hidden {
   display: none;
+}
+footer {
+  background-color: hsl(303, 100%, 66%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3rem;
+  border: outset;
+  border-radius: 8px 8px 0 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: right;
 }
