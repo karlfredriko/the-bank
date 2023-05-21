@@ -91,7 +91,12 @@ const accountInfo = async (id) => {
   const userAccounts = document.querySelector("#userAccounts");
   withdrawBtn.addEventListener("click", async () => {
     const newTotal = +amount - +amountToChange.value;
-    if (newTotal < 0) {
+    if (amount === 0) {
+      alert(
+        `You can't withdraw from ${account_name} because it is currently empty.`
+      );
+      return;
+    } else if (newTotal < 0) {
       alert(`You can't withdraw more BG's than ${amount} from this account.`);
     } else {
       updateAmount(newTotal, _id);
