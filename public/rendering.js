@@ -90,26 +90,38 @@ const accountInfo = async (id) => {
   const withdrawBtn = document.querySelector("#accountWithdraw");
   const userAccounts = document.querySelector("#userAccounts");
   withdrawBtn.addEventListener("click", async () => {
-    const newTotal = +amount - +amountToChange.value;
-    if (amount === 0) {
+    if (+amountToChange.value < 0) {
       alert(
-        `You can't withdraw from ${account_name} because it is currently empty.`
+        `You can't withdraw a negative number, please input a valid number.`
       );
-      return;
-    } else if (newTotal < 0) {
-      alert(`You can't withdraw more BG's than ${amount} from this account.`);
     } else {
-      updateAmount(newTotal, _id);
-      updateOption(res.singleAccount, newTotal);
-      accountInfo(_id);
+      const newTotal = +amount - +amountToChange.value;
+      if (amount === 0) {
+        alert(
+          `You can't withdraw from ${account_name} because it is currently empty.`
+        );
+        return;
+      } else if (newTotal < 0) {
+        alert(`You can't withdraw more BG's than ${amount} from this account.`);
+      } else {
+        updateAmount(newTotal, _id);
+        updateOption(res.singleAccount, newTotal);
+        accountInfo(_id);
+      }
     }
   });
   const depositBtn = document.querySelector("#accountDeposit");
   depositBtn.addEventListener("click", async () => {
-    const newTotal = +amountToChange.value + +amount;
-    updateAmount(newTotal, _id);
-    updateOption(res.singleAccount, newTotal);
-    accountInfo(_id);
+    if (+amountToChange.value < 0) {
+      alert(
+        `You can't deposit a negative number, please input a valid number.`
+      );
+    } else {
+      const newTotal = +amountToChange.value + +amount;
+      updateAmount(newTotal, _id);
+      updateOption(res.singleAccount, newTotal);
+      accountInfo(_id);
+    }
   });
 };
 const updateAmount = async (amount, id) => {
